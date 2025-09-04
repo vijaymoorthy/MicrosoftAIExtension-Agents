@@ -39,8 +39,7 @@ flowchart TB
   client --> llm[LLM Provider]
   llm --> client
   client --> provider[AttributeToolProvider]
-  provider --> tools[Tools: Weather/Wardrobe]
-  tools --> weather[Weather API]
+  tools--> tools[Tools: Weather,Wardrobe,email]  
   client --> agent
   agent --> user
 ```
