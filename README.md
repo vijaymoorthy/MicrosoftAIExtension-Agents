@@ -45,6 +45,76 @@ flowchart TB
   agent --> user
 ```
 # Components & responsibilities
+```mermaid
+classDiagram
+    class Program {
+        +Main(string[] args)
+    }
+    class Startup {
+        +ConfigureServices(HostApplicationBuilder, string provider, string model)
+    }
+    class ChatAgent {
+        +RunAsync(IServiceProvider)
+    }
+    class WeatherTool {
+        +GetWeatherInCity(string city, CancellationToken)
+    }
+    class WardrobeTool {
+        +GetOutfitSuggestion(string weatherDescription)
+    }
+    class EmailTool {
+        +SendEmail(string person, string weatherDescription, string clothsToWear)
+    }
+    class ToolAttribute {
+        +Name:string
+        +Description:string
+        +InputParams:string
+        +OutputParams:string
+        +OnFailure:string
+    }
+    class IToolProvider {
+        +GetTools(): IEnumerable<AIFunction>
+    }
+    class AttributeToolProvider {
+        -_services: IServiceProvider
+        -_assembliesToScan: Assembly[]
+        +GetTools(): IEnumerable<AIFunction>
+    }
+    class AIFunctionFactory {
+        <<static>>
+        +Create(...)
+    }
+    class ChatClientBuilder {
+        +UseLogging()
+        +UseFunctionInvocation()
+        +Build(): IChatClient
+    }
+    class ChatOptions {
+        +ModelId:string
+        +Temperature:float
+        +MaxOutputTokens:int
+        +Tools: IList<AIFunction>
+    }
+    class IChatClient {
+        +GetResponseAsync(...)
+    }
+
+    Program --> Startup : calls
+    Startup --> ChatClientBuilder : uses
+    Startup --> AttributeToolProvider : registers
+    Startup --> ChatOptions : configures
+    ChatAgent --> IChatClient : uses
+    ChatAgent --> ChatOptions : uses
+    AttributeToolProvider --> IToolProvider : implements
+    AttributeToolProvider --> ToolAttribute : reads via reflection
+    WeatherTool --|> ToolAttribute : annotation
+    WardrobeTool --|> ToolAttribute : annotation
+    EmailTool --|> ToolAttribute : annotation
+    ChatClientBuilder --> IChatClient : builds
+    ChatOptions --> AIFunctionFactory : tool list contains functions
+
+```
+
 
 ## 1) Program (composition root)
 
