@@ -43,3 +43,4 @@ _ReSharper*/
 
 # Local secrets
 .env
+/.vs/MicrosoftAIExtension
